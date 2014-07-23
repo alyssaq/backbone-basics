@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Backbone list swap</title>
+  <style type="text/css">
+    .swap {
+      font-family:sans-serif; color:blue; cursor:pointer;
+    }
+    .delete {
+      cursor:pointer; color:red; font-family:sans-serif;
+    }
+  </style>
+</head>
+<body>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.4/zepto.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
+<button id="add">Add list item</button>
+<ul id="bblist"></ul>
+
+<script type="text/template" id="item-template">
+  <span> {{part1}} {{part2}} </span>
+  <span class="swap">[swap]</span>
+  <span class="delete">[delete]</span>
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    _.templateSettings = { interpolate : /\{\{(.+?)\}\}/g };
+
+    Backbone.sync = function(method, model, success, error) {
+      success();
+    }
+
+    var Item = Backbone.Model.extend({
+      defaults: {
+        part1: 'Laughing',
+        part2: 'Person'
+      }
+    });
+
+    var List = Backbone.Collection.extend({
+      model: Item,
+      verbs: ['Running', 'Skipping', 'Prancing', 'Dancing'],
+
+      addItem: function(counter) {
+        var item = new this.model();
+        var idx = Math.round(Math.random() * (this.verbs.length-1));
+        item.set({
+          part1: this.verbs[idx],
+          part2: item.get('part2') + counter
+        });
+        this.add(item);
+      }
+    });
+
+    var ItemView = Backbone.View.extend({
+      tagName: 'li', // name of (orphan) root tag in this.el
+      template: _.template($('#item-template').html()),
+      events: {
+        'click span.swap': 'swap',
+        'click span.delete': 'remove'
+      },
+
+      initialize: function() {
+        this.model.on('change', this.render, this);
+        this.model.on('remove', this.unrender, this);
+      },
+
+      render: function() {
+        this.$el.html(this.template(this.model.attributes));
+        return this.el; // return the li element
+      },
+
+      unrender: function() {
+        this.$el.remove();
+      },
+
+      swap: function() {
+        var swapped = {
+          part1: this.model.get('part2'),
+          part2: this.model.get('part1')
+        };
+        this.model.set(swapped);
+      },
+
+      remove: function() {
+        this.model.destroy();
+      }
+    });
+
+
+    var ListView = Backbone.View.extend({
+      el: '#bblist', //attached this.el to an existing elemnet
+
+      events: {
+        'click #add': 'addItem'
+      },
+
+      initialize: function() {
+        _.bindAll(this, 'render', 'appendItem');
+        this.collection.on('add', this.appendItem, this);
+        this.render();
+      },
+
+      render: function() {
+        this.$el.append("<li> hello world </li>");
+
+        // _(this.collection.models).each(function(item) { //in case collection is not empty
+        //    self.appendItem(item);
+        // }, this);
+      },
+
+
+      appendItem: function(item) {
+        var itemView = new ItemView({model: item});
+        this.$el.append(itemView.render());
+      }
+
+    });
+
+    var ButtonView = Backbone.View.extend({
+      el: '#add',
+      counter: 0,
+
+      events: {
+        'click': 'addItem'
+      },
+
+      initialize: function () {
+        console.log('button initialized')
+       },
+
+      addItem: function() {
+        this.collection.addItem(++this.counter);
+      }
+    })
+
+    var Router = Backbone.Router.extend({
+      routes: {
+        "about" : "about",
+        "search/:query" : "search",
+        "search/:query/p:page" : "search",
+        "*other": "default"
+      },
+
+      default: function() {
+        var myList = new List();
+        new ListView({collection: myList});
+        new ButtonView({collection: myList});
+        console.log('default');
+      },
+
+      about: function(){
+        console.log('about');
+      },
+
+      search: function(query, page){
+        var page_number = page || 1;
+        console.log("Page number: " + page_number + " of the results for todos containing the word: " + query);
+      }
+    });
+
+    new Router();
+    Backbone.history.start();
+  });
+</script>
+</body>
+</html>
