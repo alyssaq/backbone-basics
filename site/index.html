@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Backbone.js Library</title>
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.4/zepto.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
+  <div id="books">
+  <form id="addBook" action="#">
+    <label for="coverImage">CoverImage: </label><input id="coverImage" type="file" />
+    <label for="title">Title: </label><input id="title" type="text" />
+    <label for="author">Author: </label><input id="author" type="text" />
+    <label for="releaseDate">Release date: </label><input id="releaseDate" type="text" />
+    <label for="keywords">Keywords: </label><input id="keywords" type="text" />
+    <button id="add">Add</button>
+  </form>
+
+  <!-- <canvas id="thumbnail"></canvas> -->
+
+  <div class="bookContainer">
+    <img src="img/placeholder.png"/>
+    <ul>
+        <li>Title</li>
+        <li>Author</li>
+        <li>Release Date</li>
+        <li>Keywords</li>
+    </ul>
+    <button class="delete">Delete</button>
+  </div>
+
+  <script type="text/template" id="bookTemplate">
+    <img src="<%= coverImage %>"/>
+    <ul>
+      <li><%= title %></li>
+      <li><%= author %></li>
+      <li><%= releaseDate %></li>
+      <li><%= keywords %></li>
+    </ul>
+
+    <button class="delete">Delete</button>
+  </script>
+  </div>
+  <script src="js/models/book.js"></script>
+  <script src="js/collections/library.js"></script>
+  <script src="js/views/book.js"></script>
+  <script src="js/views/library.js"></script>
+  <script src="js/app.js"></script>
+
+  </body>
+</html>
