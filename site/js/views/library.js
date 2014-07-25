@@ -42,7 +42,10 @@ app.LibraryView = Backbone.View.extend({
         formData[el.id] = $(el).val();
       }
     });
-    this.collection.add(new app.Book(formData));
+    formData.keywords = formData.keywords.split(',');
+    formData.releaseDate = new Date(formData.releaseDate).getTime();
+    //this.collection.add(new app.Book(formData));
+    this.collection.create(formData);
   },
 
   uploadImage: function(e) {

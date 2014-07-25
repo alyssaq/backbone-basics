@@ -9,11 +9,12 @@ var app = express();
 
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 // parse application/json
 app.use(bodyParser.json())
 //checks request.body for HTTP method overrides
 app.use(methodOverride());
+
 //Where to serve static content
 app.use(express.static(path.join(__dirname, '..', 'site')));
 app.use(errorhandler());
@@ -33,7 +34,7 @@ var Book = new mongoose.Schema({
   title: String,
   author: String,
   releaseDate: Date,
-  keywords: [Keywords]
+  keywords: [String]
 });
 
 var BookModel = mongoose.model('Book', Book);
@@ -60,6 +61,7 @@ app.get('/api/books/:id', function(request, response) {
 });
 
 app.post('/api/books', function(request, response) {
+  console.log('Adding book')
   var book = new BookModel({
     title: request.body.title,
     author: request.body.author,
@@ -67,6 +69,7 @@ app.post('/api/books', function(request, response) {
     keywords: request.body.keywords
   });
 
+  console.log(book)
   return book.save(function(err) {
     if(!err) {
         console.log('created');
@@ -83,7 +86,7 @@ app.put('/api/books/:id', function(request, response) {
     book.title = request.body.title || book.title;
     book.author = request.body.author || book.author;
     book.releaseDate = request.body.releaseDate || new Date().getTime();
-    book.keywords = request.body.keywords || book.keywords;
+    book.keywords = request.body.keywords || book.keywords || [];
 
     return book.save(function(err) {
       if(!err) {
@@ -110,7 +113,7 @@ app.delete('/api/books/:id', function(request, response) {
   });
 });
 
-var port = 3000;
+var port = 4000;
 app.listen( port, function() {
   console.log( 'Express server listening on port %d in %s mode', port, app.settings.env );
 });
