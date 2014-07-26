@@ -10,7 +10,8 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
   <div id="books">
-  <form id="addBook" action="#">
+
+  <form id="addBook" name="fileinfo" enctype="multipart/form-data">
     <label for="coverImage">CoverImage: </label><input id="coverImage" type="file" />
     <label for="title">Title: </label><input id="title" type="text" />
     <label for="author">Author: </label><input id="author" type="text" />
@@ -18,8 +19,8 @@
     <label for="keywords">Keywords: </label><input id="keywords" type="text" />
     <button id="add">Add</button>
   </form>
-
-  <!-- <canvas id="thumbnail"></canvas> -->
+<div id="output"></div>
+  <canvas id="thumbnail"></canvas>
 <!--
   <div class="bookContainer">
     <img src="img/placeholder.png"/>

@@ -14,3 +14,4 @@
 
 ## Reference
 <http://addyosmani.github.io/backbone-fundamentals>
+<http://ricostacruz.com/backbone-patterns>

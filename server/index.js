@@ -4,16 +4,18 @@ var methodOverride = require('method-override');
 var errorhandler = require('errorhandler');
 var path = require('path');
 var mongoose = require('mongoose');
+var fs = require('fs');
+var multer  = require('multer')
 
 var app = express();
-
-
+app.use(multer({ dest: './uploads/'}));
+//app.use(busboy());
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }))
+//app.use(bodyParser.urlencoded({ extended: true }))
 // parse application/json
-app.use(bodyParser.json())
+//app.use(bodyParser.json())
 //checks request.body for HTTP method overrides
-app.use(methodOverride());
+//app.use(methodOverride());
 
 //Where to serve static content
 app.use(express.static(path.join(__dirname, '..', 'site')));
@@ -111,6 +113,31 @@ app.delete('/api/books/:id', function(request, response) {
       }
     });
   });
+});
+
+app.post('/fileupload', function(req, res) {
+  console.log(req.files);
+  console.log('FILEUPLOAD', Object.keys(req.body));
+  return res.send('done');
+  // var busboy = new Busboy({ headers: req.headers });
+  // busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+  //   console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
+  //   file.on('data', function(data) {
+  //     console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+  //   });
+  //   file.on('end', function() {
+  //     console.log('File [' + fieldname + '] Finished');
+  //   });
+  // });
+  // busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated) {
+  //   console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+  // });
+  // busboy.on('finish', function() {
+  //   console.log('Done parsing form!');
+  //   res.writeHead(303, { Connection: 'close', Location: '/' });
+  //   res.end();
+  // });
+  // req.pipe(busboy);
 });
 
 var port = 4000;
