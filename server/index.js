@@ -71,7 +71,7 @@ app.post('/api/books', function(req, response) {
   book.author = req.body.author;
   book.releaseDate = req.body.releaseDate;
   book.keywords = req.body.keywords;
-  book.coverImage = '/img/uploads' + req.files.coverImage.name;
+  book.coverImage = '/img/uploads/' + req.files.coverImage.name;
   console.log(req.files)
   console.log(req.files.coverImage)
 
