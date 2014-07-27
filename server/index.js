@@ -8,7 +8,7 @@ var fs = require('fs');
 var multer  = require('multer')
 
 var app = express();
-app.use(multer({ dest: './uploads/'}));
+app.use(multer({ dest: '../site/img/uploads'}));
 //app.use(busboy());
 // parse application/x-www-form-urlencoded
 //app.use(bodyParser.urlencoded({ extended: true }))
@@ -19,6 +19,7 @@ app.use(multer({ dest: './uploads/'}));
 
 //Where to serve static content
 app.use(express.static(path.join(__dirname, '..', 'site')));
+
 app.use(errorhandler());
 
 app.use(function (req, res, next) {
@@ -36,7 +37,8 @@ var Book = new mongoose.Schema({
   title: String,
   author: String,
   releaseDate: Date,
-  keywords: [String]
+  keywords: [String],
+  coverImage: String
 });
 
 var BookModel = mongoose.model('Book', Book);
@@ -62,19 +64,21 @@ app.get('/api/books/:id', function(request, response) {
   });
 });
 
-app.post('/api/books', function(request, response) {
-  console.log('Adding book')
-  var book = new BookModel({
-    title: request.body.title,
-    author: request.body.author,
-    releaseDate: request.body.releaseDate,
-    keywords: request.body.keywords
-  });
+app.post('/api/books', function(req, response) {
+  console.log('Adding book');
+  var book = new BookModel();
+  book.title = req.body.title;
+  book.author = req.body.author;
+  book.releaseDate = req.body.releaseDate;
+  book.keywords = req.body.keywords;
+  book.coverImage = '/img/uploads' + req.files.coverImage.name;
+  console.log(req.files)
+  console.log(req.files.coverImage)
 
-  console.log(book)
+  console.log(book);
   return book.save(function(err) {
-    if(!err) {
-        console.log('created');
+    if (!err) {
+      console.log('created');
       return response.send(book);
       } else {
         console.log(err);
@@ -113,31 +117,6 @@ app.delete('/api/books/:id', function(request, response) {
       }
     });
   });
-});
-
-app.post('/fileupload', function(req, res) {
-  console.log(req.files);
-  console.log('FILEUPLOAD', Object.keys(req.body));
-  return res.send('done');
-  // var busboy = new Busboy({ headers: req.headers });
-  // busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-  //   console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
-  //   file.on('data', function(data) {
-  //     console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
-  //   });
-  //   file.on('end', function() {
-  //     console.log('File [' + fieldname + '] Finished');
-  //   });
-  // });
-  // busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated) {
-  //   console.log('Field [' + fieldname + ']: value: ' + inspect(val));
-  // });
-  // busboy.on('finish', function() {
-  //   console.log('Done parsing form!');
-  //   res.writeHead(303, { Connection: 'close', Location: '/' });
-  //   res.end();
-  // });
-  // req.pipe(busboy);
 });
 
 var port = 4000;

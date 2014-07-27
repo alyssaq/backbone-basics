@@ -32,6 +32,7 @@ app.LibraryView = Backbone.View.extend({
     });
     this.$el.append(bookView.render().el);
   },
+
   addBook: function(e) {
     e.preventDefault();
     var formData = new FormData();
@@ -46,7 +47,7 @@ app.LibraryView = Backbone.View.extend({
     var oOutput = document.getElementById("output");
 
     var oReq = new XMLHttpRequest();
-    oReq.open("POST", "http://localhost:4000/fileupload", true);
+    oReq.open("POST", "http://localhost:4000/api/books", true);
     oReq.onload = function(oEvent) {
       if (oReq.status == 200) {
         oOutput.innerHTML = "Uploaded!";
@@ -58,36 +59,7 @@ app.LibraryView = Backbone.View.extend({
     oReq.send(formData);
     this.collection.create(formData);
   },
-  addBook3: function(e) {
-    var formData = new FormData(document.getElementById('addBook'));
-    formData.append("CustomField", "This is some extra data");
-    $.ajax({
-        type: 'POST',
-        async: true,
-        url: 'http://localhost:4000/fileupload',  //Server script to process data
-        // xhr: function() {  // Custom XMLHttpRequest
-        //     var myXhr = $.ajaxSettings.xhr();
-        //     if(myXhr.upload){ // Check if upload property exists
-        //         myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-        //     }
-        //     return myXhr;
-        // },
-        //Ajax events
-        // beforeSend: beforeSendHandler,
-        // success: function(data) {
-        //   //console.log('Success' + data)
-        // },
-        error: function(err) {
-          alert('Err ' + err)
-        },
-        // Form data
-        data: formData,
-        //Options to tell jQuery not to process data or worry about content-type.
-        //cache: false,
-        contentType: false,
-        processData: false
-    });
-  },
+
   addBook2: function(e) {
     e.preventDefault();
     var formData = {};
